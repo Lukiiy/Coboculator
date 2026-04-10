@@ -11,6 +11,7 @@
        01  result PIC S9(18)V99.
        01  fNum PIC S9(18)V99.
        01  fNum1 PIC S9(18)V99.
+       01  numDisplay PIC -ZZZZZZ9.99. *> whoa
 
        procedure division.
            DISPLAY "Enter 1st number: "
@@ -46,5 +47,6 @@
                    STOP RUN
            END-EVALUATE
 
-           DISPLAY "Result: " result
+           MOVE result TO numDisplay
+           DISPLAY "Result: " numDisplay
            STOP RUN.
