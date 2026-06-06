@@ -1,8 +1,8 @@
        identification division.
-       
+
        program-id. calculator.
        author. Lukiiy
-       
+
        data division.
        working-storage section.
        01  inputNum PIC X(20).
@@ -17,7 +17,7 @@
            DISPLAY "Enter 1st number: "
            ACCEPT inputNum
 
-           DISPLAY "Enter operator (+, -, *, /): "
+           DISPLAY "Enter operator (+, -, *, /, ^): "
            ACCEPT operator
 
            DISPLAY "Enter 2nd number: "
@@ -35,12 +35,14 @@
                    COMPUTE result = fNum * fNum1
                WHEN "x"
                    COMPUTE result = fNum * fNum1
+               WHEN "^"
+                   COMPUTE result = fNum ** fNum1
                WHEN "/"
                    IF fNum1 = 0
                        DISPLAY "You can't divide something by 0!"
                        STOP RUN
                    END-IF
- 
+
                    COMPUTE result = fNum / fNum1
                WHEN OTHER
                    DISPLAY "Invalid operator!"
