@@ -1,0 +1,45 @@
+name: Build
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-15-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v6.0.3
+
+      - name: Get compiler # Linux
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gnucobol
+
+      - name: Get compiler # macOS
+        if: runner.os == 'macOS'
+        run: brew install gnucobol
+
+      - name: Get compiler # Windows
+        if: runner.os == 'Windows'
+        run: |
+          choco install gnucobol -y
+
+          echo "C:\ProgramData\chocolatey\lib\gnucobol\tools\bin" >> $env:GITHUB_PATH
+
+      - name: Build
+        run: cobc -x -o coboculator calculator.cbl
+
+      - name: Upload
+        uses: actions/upload-artifact@v7.0.1
+        with:
+          name: app-${{ matrix.os }}
+          path: |
+            coboculator
+            coboculator.exe
+          if-no-files-found: error
