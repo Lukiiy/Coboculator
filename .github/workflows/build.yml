@@ -42,7 +42,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          cobc -conf=/mingw64/share/gnucobol/config/default.conf -x -o coboculator.exe calculator.cbl
+          cobc -conf=/mingw64/share/gnucobol/config/default.conf -x -static -o coboculator.exe calculator.cbl
 
       - name: Upload
         uses: actions/upload-artifact@v7.0.1
