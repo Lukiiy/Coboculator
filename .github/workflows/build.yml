@@ -29,6 +29,7 @@ jobs:
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
         with:
+          msystem: mingw64
           update: true
           install: mingw-w64-x86_64-gnucobol
           cache: false
@@ -42,7 +43,8 @@ jobs:
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          cobc -conf=/mingw64/share/gnucobol/config/default.conf -x -static -o coboculator.exe calculator.cbl
+          cobc -x -o coboculator.exe calculator.cbl
+          ldd coboculator.exe | grep '/mingw64/bin/' | awk '{print $3}' | xargs -I {} cp {} .
 
       - name: Upload
         uses: actions/upload-artifact@v7.0.1
