@@ -29,9 +29,9 @@ jobs:
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
         with:
-          msystem: mingw64
+          msystem: ucrt64
           update: true
-          install: mingw-w64-x86_64-gnucobol
+          install: mingw-w64-ucrt-x86_64-gnucobol
           cache: false
 
       - name: Build
@@ -43,8 +43,11 @@ jobs:
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
+          export COB_CONFIG_DIR=$(cygpath -m /ucrt64/share/gnucobol/config)
+          export COB_COPY_DIR=$(cygpath -m /ucrt64/share/gnucobol/copy)
+
           cobc -x -o coboculator.exe calculator.cbl
-          ldd coboculator.exe | grep '/mingw64/bin/' | awk '{print $3}' | xargs -I {} cp {} .
+          ldd coboculator.exe | grep '/ucrt64/bin/' | awk '{print $3}' | xargs -I {} cp {} .
 
       - name: Upload
         uses: actions/upload-artifact@v7.0.1
