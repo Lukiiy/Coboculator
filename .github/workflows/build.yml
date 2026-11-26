@@ -34,10 +34,17 @@ jobs:
           install: mingw-w64-ucrt-x86_64-gnucobol
           cache: false
 
-      - name: Build
-        if: runner.os != 'Windows'
+      - name: Build # Linux
+        if: runner.os == 'Linux'
         run: |
           cobc -x -o coboculator calculator.cbl
+          ldd coboculator
+
+      - name: Build # macOS
+        if: runner.os == 'macOS'
+        run: |
+          cobc -x -o coboculator calculator.cbl
+          otool -L coboculator
 
       - name: Build # Windows
         if: runner.os == 'Windows'
@@ -49,6 +56,22 @@ jobs:
           cobc -x -o coboculator.exe calculator.cbl
           ldd coboculator.exe | grep '/ucrt64/bin/' | awk '{print $3}' | xargs -I {} cp {} .
 
+      - name: Test # Linux
+        if: runner.os == 'Linux'
+        run: |
+          ./coboculator
+
+      - name: Test # macOS
+        if: runner.os == 'macOS'
+        run: |
+          ./coboculator
+
+      - name: Test # Windows
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          ./coboculator.exe
+
       - name: Upload
         uses: actions/upload-artifact@v7.0.1
         with:
@@ -56,4 +79,5 @@ jobs:
           path: |
             coboculator
             coboculator.exe
+            *.dll
           if-no-files-found: error
